@@ -7,20 +7,20 @@ services:
   #   network_mode: service:db
   #   command: sleep infinity
 
-  local-docker-1:
+  torch:
     build: 
       context: .
-      dockerfile: service_1/Dockerfile._one
+      dockerfile: torch/Dockerfile._one
     volumes:
-      - ../..:/workspaces/service_1:cached    
+      - ../..:/workspaces/torch:cached    
     command: sleep infinity  
   
-  local-docker-2:
+  tensorflow:
     build: 
       context: .
-      dockerfile: service_2/Dockerfile._two
+      dockerfile: tensorflow/Dockerfile._two
     volumes:
-      - ../..:/workspaces/service_2:cached   
+      - ../..:/workspaces/tensorflow:cached   
     command: sleep infinity     
     
   db:
@@ -32,6 +32,15 @@ services:
       POSTGRES_PASSWORD: postgres
       POSTGRES_USER: postgres
       POSTGRES_DB: postgres
+
+  tf_serving:
+    image: tensorflow/serving:latest
+    restart: unless-stopped
+    ports:
+      - "8500:8500"
+      - "8501:8501" 
+    command: sleep infinity 
+
 
 volumes:
   postgres-data:

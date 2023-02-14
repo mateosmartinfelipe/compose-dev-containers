@@ -1,5 +1,0 @@
-FROM python:3.10
-RUN python --version
-RUN pip install poetry
-RUN poetry init
-RUN poetry add numpy
