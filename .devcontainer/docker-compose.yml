@@ -11,17 +11,19 @@ services:
     build: 
       context: .
       dockerfile: torch/Dockerfile
-    volumes:
-      - ../..:/workspaces/torch:cached    
-    command: sleep infinity  
-  
-  tensorflow:
-    build: 
-      context: .
-      dockerfile: tensorflow/Dockerfile
-    volumes:
-      - ../..:/workspaces/tensorflow:cached   
-    command: sleep infinity     
+    # volumes:
+    #   - ../..:/workspaces/torch:cached    
+    networks:
+          - back-end   
+    command: sleep infinity
+  # tensorflow:
+  #   build: 
+  #     context: .
+  #     dockerfile: tensorflow/Dockerfile
+  #   # volumes:
+  #   #   - ../..:/workspaces/tensorflow:cached   
+  #   networks:
+  #         - back-end     
     
   minio:
       restart: always
@@ -57,26 +59,26 @@ services:
           - mlflow_db:/var/lib/mysql
       networks:
           - back-end
-  web:
-      restart: always
-      build:
-        context: .
-        dockerfile: mlflow_web/Dockerfile
-      image: mlflow_web
-      container_name: mlflow_web
-      depends_on:
-          - minio
-          - db
-      ports:
-          - "5000:5000"
-      env_file:
-           - .env
-      environment:
-          - MLFLOW_S3_ENDPOINT_URL=${MLFLOW_S3_ENDPOINT_URL}
-          - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
-          - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
-      networks:
-       - back-end
+  # web:
+  #     # restart: always
+  #     build:
+  #       context: .
+  #       dockerfile: mlflow_web/Dockerfile
+  #     image: mlflow_web
+  #     container_name: mlflow_web
+  #     depends_on:
+  #         - minio
+  #         - db
+  #     ports:
+  #         - "5000:5000"
+  #     env_file:
+  #          - .env
+  #     environment:
+  #         - MLFLOW_S3_ENDPOINT_URL=${MLFLOW_S3_ENDPOINT_URL}
+  #         - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+  #         - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+  #     networks:
+  #      - back-end
   redis:
     restart: always
     image: 'redis'
