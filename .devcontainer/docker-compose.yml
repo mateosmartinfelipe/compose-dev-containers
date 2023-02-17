@@ -8,27 +8,27 @@ services:
   #   command: sleep infinity
 
   torch:
-    build: 
+    build:
       context: .
       dockerfile: torch/Dockerfile
     # volumes:
-    #   - ../..:/workspaces/torch:cached 
-    container_name: torch   
+    #   - ../..:/workspaces/torch:cached
+    container_name: torch
     networks:
-          - back-end   
+          - back-end
     command: sleep infinity
 
   tensorflow:
-    build: 
+    build:
       context: .
       dockerfile: tensorflow/Dockerfile
     # volumes:
-    #   - ../..:/workspaces/tensorflow:cached 
-    container_name: tensorflow  
+    #   - ../..:/workspaces/tensorflow:cached
+    container_name: tensorflow
     networks:
-          - back-end    
-    command: sleep infinity 
-    
+          - back-end
+    command: sleep infinity
+
   minio:
       restart: always
       image: minio/minio
@@ -120,10 +120,10 @@ services:
       - kafka
   web:
     tty: true
-    build: 
+    build:
       context: .
       dockerfile: mlflow-web/Dockerfile
-    container_name: mlflow_web   
+    container_name: mlflow_web
     depends_on:
         - minio
         - db
