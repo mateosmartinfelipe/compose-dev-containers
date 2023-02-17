@@ -119,6 +119,7 @@ services:
     depends_on:
       - kafka
   web:
+    tty: true
     build: 
       context: .
       dockerfile: mlflow-web/Dockerfile
