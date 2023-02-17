@@ -12,18 +12,22 @@ services:
       context: .
       dockerfile: torch/Dockerfile
     # volumes:
-    #   - ../..:/workspaces/torch:cached    
+    #   - ../..:/workspaces/torch:cached 
+    container_name: torch   
     networks:
           - back-end   
     command: sleep infinity
-  # tensorflow:
-  #   build: 
-  #     context: .
-  #     dockerfile: tensorflow/Dockerfile
-  #   # volumes:
-  #   #   - ../..:/workspaces/tensorflow:cached   
-  #   networks:
-  #         - back-end     
+
+  tensorflow:
+    build: 
+      context: .
+      dockerfile: tensorflow/Dockerfile
+    # volumes:
+    #   - ../..:/workspaces/tensorflow:cached 
+    container_name: tensorflow  
+    networks:
+          - back-end    
+    command: sleep infinity 
     
   minio:
       restart: always
@@ -59,26 +63,6 @@ services:
           - mlflow_db:/var/lib/mysql
       networks:
           - back-end
-  # web:
-  #     # restart: always
-  #     build:
-  #       context: .
-  #       dockerfile: mlflow_web/Dockerfile
-  #     image: mlflow_web
-  #     container_name: mlflow_web
-  #     depends_on:
-  #         - minio
-  #         - db
-  #     ports:
-  #         - "5000:5000"
-  #     env_file:
-  #          - .env
-  #     environment:
-  #         - MLFLOW_S3_ENDPOINT_URL=${MLFLOW_S3_ENDPOINT_URL}
-  #         - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
-  #         - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
-  #     networks:
-  #      - back-end
   redis:
     restart: always
     image: 'redis'
@@ -134,6 +118,24 @@ services:
       - back-end
     depends_on:
       - kafka
+  web:
+    build: 
+      context: .
+      dockerfile: mlflow-web/Dockerfile
+    container_name: mlflow_web   
+    depends_on:
+        - minio
+        - db
+    ports:
+        - "5000:5000"
+    env_file:
+          - .env
+    environment:
+        - MLFLOW_S3_ENDPOINT_URL=${MLFLOW_S3_ENDPOINT_URL}
+        - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+        - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+    networks:
+      - back-end
   # api:
   #   restart: always
   #   image: 'recommender-api:0.0.1'
