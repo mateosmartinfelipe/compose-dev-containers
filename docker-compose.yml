@@ -1,19 +1,26 @@
 version: '3.9'
 services:
-  # devcontainer:
-  #   image: mcr.microsoft.com/devcontainers/base:ubuntu
-  #   volumes:
-  #     - ../..:/workspaces:cached
-  #   network_mode: service:db
-  #   command: sleep infinity
 
   torch:
     build:
       context: .
       dockerfile: torch/Dockerfile
-    # volumes:
-    #   - ../..:/workspaces/torch:cached
+    image: torch:0.0.1
+    volumes:
+       - ./data/torch:/app/data
     container_name: torch
+    networks:
+          - back-end
+    command: sleep infinity
+
+  jax:
+    build:
+      context: .
+      dockerfile: jax/Dockerfile
+    image: jax:0.0.1
+    volumes:
+       - ./data/jax:/app/data
+    container_name: jax
     networks:
           - back-end
     command: sleep infinity
@@ -22,8 +29,9 @@ services:
     build:
       context: .
       dockerfile: tensorflow/Dockerfile
-    # volumes:
-    #   - ../..:/workspaces/tensorflow:cached
+    image: tensorflow:0.0.1
+    volumes:
+       - ./data/tensorflow:/app/data
     container_name: tensorflow
     networks:
           - back-end
@@ -43,7 +51,7 @@ services:
           - MINIO_ROOT_USER=${AWS_ACCESS_KEY_ID}
           - MINIO_ROOT_PASSWORD=${AWS_SECRET_ACCESS_KEY}
       volumes:
-          - mlflow_artifacts:/data
+          - ./data/mlflow_artifacts:/data
       networks:
           - back-end
   db:
@@ -60,7 +68,7 @@ services:
           - MYSQL_PASSWORD=${MYSQL_PASSWORD}
           - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
       volumes:
-          - mlflow_db:/var/lib/mysql
+          - ./data/mlflow_db:/var/lib/mysql
       networks:
           - back-end
   redis:
@@ -135,6 +143,7 @@ services:
         - MLFLOW_S3_ENDPOINT_URL=${MLFLOW_S3_ENDPOINT_URL}
         - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
         - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+    command: /bin/bash start.sh
     networks:
       - back-end
   # api:

@@ -1,8 +1,8 @@
 FROM python:3.10-slim
 WORKDIR /app
 RUN pip install --upgrade pip
-COPY /tensorflow/requirements.txt .
-COPY /tensorflow/requirements.test.txt .
+COPY /jax/requirements.txt .
+COPY /jax/requirements.test.txt .
 RUN pip install -r requirements.txt
 RUN pip install -r requirements.test.txt
-copy /tensorflow/src .
+COPY /jax/src .

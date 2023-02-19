@@ -1,8 +1,8 @@
-FROM python:3.10
+FROM python:3.10-slim
 WORKDIR /app
 RUN pip install --upgrade pip
-COPY /torch/requirements.txt /app/
-COPY /torch/requirements.test.txt /app
-RUN pip install -r /app/requirements.txt
-RUN pip install -r /app/requirements.test.txt
-COPY /torch /app
+COPY /torch/requirements.txt .
+COPY /torch/requirements.test.txt .
+RUN pip install -r requirements.txt
+RUN pip install -r requirements.test.txt
+COPY /torch/src .
