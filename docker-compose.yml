@@ -4,11 +4,14 @@ services:
   torch:
     build:
       context: .
-      dockerfile: torch/Dockerfile
+      dockerfile: ./torch/Dockerfile
+      args:
+        NAME: torch
     image: torch:0.0.1
+    container_name: torch-models
     volumes:
        - ./data/torch:/app/data
-    container_name: torch
+    container_name: torch-models
     networks:
           - back-end
     command: sleep infinity
@@ -17,10 +20,12 @@ services:
     build:
       context: .
       dockerfile: jax/Dockerfile
+      args:
+        NAME: jax
     image: jax:0.0.1
     volumes:
        - ./data/jax:/app/data
-    container_name: jax
+    container_name: jax-models
     networks:
           - back-end
     command: sleep infinity
@@ -29,10 +34,12 @@ services:
     build:
       context: .
       dockerfile: tensorflow/Dockerfile
+      args:
+        NAME: tensorflow
     image: tensorflow:0.0.1
     volumes:
        - ./data/tensorflow:/app/data
-    container_name: tensorflow
+    container_name: tensorflow-models
     networks:
           - back-end
     command: sleep infinity
@@ -113,6 +120,7 @@ services:
       interval: 5s
       timeout: 10s
       retries: 10
+
   kafdrop:
     restart: always
     image: obsidiandynamics/kafdrop
@@ -126,6 +134,7 @@ services:
       - back-end
     depends_on:
       - kafka
+      
   web:
     tty: true
     build:
@@ -146,20 +155,23 @@ services:
     command: /bin/bash start.sh
     networks:
       - back-end
-  # api:
-  #   restart: always
-  #   image: 'recommender-api:0.0.1'
-  #   container_name: recomenders-api
-  #   build: ./service
-  #   env_file:
-  #     - .env
-  #   ports:
-  #     - "8000:8000"
-  #   depends_on:
-  #     kafka:
-  #       condition: service_healthy
-  #   networks:
-  #      - back-end
+  api:
+    restart: always
+    image: 'recommender-api:0.0.1'
+    container_name: recomenders-api
+    build: ./service
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"
+      - "5678:5678"
+    depends_on:
+      kafka:
+        condition: service_healthy
+    command: uvicorn recomender-service.api:app --host 0.0.0.0 --port 8000 --log-level info --reload --no-access-log
+    networks:
+       - back-end
+
 # this is very useful is a more compelx application you want to
 # have diferent networks for different parts of the service
 

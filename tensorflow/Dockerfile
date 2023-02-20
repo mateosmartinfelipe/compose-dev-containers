@@ -1,8 +1,12 @@
 FROM python:3.10-slim
-WORKDIR /app
+
+COPY /tensorflow/requirements.txt requirements.txt
+COPY /tensorflow/requirements.test.txt requirements.test.txt
+
 RUN pip install --upgrade pip
-COPY /tensorflow/requirements.txt .
-COPY /tensorflow/requirements.test.txt .
 RUN pip install -r requirements.txt
 RUN pip install -r requirements.test.txt
-copy /tensorflow/src .
+
+WORKDIR /app/
+
+COPY /tensorflow/src .

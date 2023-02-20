@@ -71,9 +71,7 @@ async def init_clients():
     logger.info("Initializing kafka client producer")
     logger.info(f"{settings.services.kafka}")
     services.kafka_producer = AIOKafkaProducer(
-        bootstrap_servers=settings.services.kafka.get_server(
-            settings.environment
-        )
+        bootstrap_servers=settings.services.kafka.get_server(settings.environment)
     )
     await services.kafka_producer.start()
 

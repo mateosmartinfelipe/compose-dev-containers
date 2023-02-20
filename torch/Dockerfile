@@ -1,8 +1,15 @@
 FROM python:3.10-slim
-WORKDIR /app
+
+ARG NAME
+ENV name=$NAME
+
+COPY /$name/requirements.txt requirements.txt
+COPY /$name/requirements.test.txt requirements.test.txt
+
 RUN pip install --upgrade pip
-COPY /torch/requirements.txt .
-COPY /torch/requirements.test.txt .
 RUN pip install -r requirements.txt
 RUN pip install -r requirements.test.txt
-COPY /torch/src .
+
+WORKDIR /app/
+
+COPY /$name/src .
