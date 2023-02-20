@@ -130,4 +130,3 @@ dmypy.json
 
 # Specific data project data folders
 /data
-.devcontainer
