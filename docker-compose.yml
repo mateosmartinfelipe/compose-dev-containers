@@ -11,7 +11,7 @@ services:
     container_name: torch-models
     volumes:
        - ./data/torch:/app/data
-       - ./torch/src:/app/src
+       - ./torch:/app
     container_name: torch-models
     networks:
           - back-end
@@ -26,7 +26,7 @@ services:
     image: jax:0.0.1
     volumes:
        - ./data/jax:/app/data
-       - ./jax/src:/app/src
+       - ./jax:/app
     container_name: jax-models
     networks:
           - back-end
@@ -41,7 +41,7 @@ services:
     image: tensorflow:0.0.1
     volumes:
        - ./data/tensorflow:/app/data
-       - ./tensorflow/src:/app/src
+       - ./tensorflow:/app
     container_name: tensorflow-models
     networks:
           - back-end

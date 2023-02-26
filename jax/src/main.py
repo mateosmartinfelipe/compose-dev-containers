@@ -1,4 +1,4 @@
 import numpy as np
-import torch
+import jax
 
-print(torch.__version__)
+print(jax.__version__)
